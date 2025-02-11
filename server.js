@@ -1,26 +1,23 @@
 const express = require('express');
-const app = express();
-const mongoose = require('mongoose');
 const cors = require('cors');
-const userRoute = require('./routes');
-mongoose.connect('mongodb://localhost:27017/pfe', { useNewUrlParser: true, useUnifiedTopology: true });
-const PORT = 3000
-const db = mongoose.connection;
+const connectDB = require('./config/db');
+const userRoutes = require('./routes/userRoutes');
 
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log('Connected to MongoDB');
-  //var collection = db.collection('user');
-  //collection.countDocuments().then(function(err, items) {console.info(err)})
-  //    console.info(collection.find())
-  //    collection.findOne({"prenom": "anis"}, function(err, item) {});
-});
+require('dotenv').config();
 
-app.use(cors())
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+connectDB();
+
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/api', userRoute);
+
+// Use the routes
+app.use('/user', userRoutes);
 
 app.listen(PORT, () => {
-  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`🚀 Server is running at http://localhost:${PORT}`);
 });
