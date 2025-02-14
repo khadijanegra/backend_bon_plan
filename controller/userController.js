@@ -32,7 +32,8 @@ class UserController {
     //console.log(this.transporter); 
 
     try {
-      const { nom, prenom, email, password, localisation, genre } = req.body;
+      const { nom, prenom, email, password, localisation } = req.body;
+      console.log(req.body);
 
       if (await User.findOne({ email })) {
         return res.status(400).json({ message: "Email already exists." });
@@ -46,7 +47,7 @@ class UserController {
         email,
         password: hashedPassword,
         localisation,
-        genre,
+    
       });
 
       // Send Welcome Email
