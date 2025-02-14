@@ -16,21 +16,30 @@ class UserController {
         pass: process.env.EMAIL_PASS,
       },
     });
+
+    // Bind methods to preserve `this`
+    this.createUser = this.createUser.bind(this);
+    this.signIn = this.signIn.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+    this.getUserById = this.getUserById.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
+    this.updateUserField = this.updateUserField.bind(this);
+    this.forgotPassword = this.forgotPassword.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
   }
 
   async createUser(req, res) {
+    //console.log(this.transporter); 
+
     try {
       const { nom, prenom, email, password, localisation, genre } = req.body;
 
-      // Check if email already exists
       if (await User.findOne({ email })) {
         return res.status(400).json({ message: "Email already exists." });
       }
 
-      // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      // Create user
       const newUser = await User.create({
         nom,
         prenom,
@@ -40,7 +49,7 @@ class UserController {
         genre,
       });
 
-      // Send welcome email
+      // Send Welcome Email
       const mailOptions = {
         from: `"BonPlan Team" <${process.env.EMAIL_USER}>`,
         to: email,
@@ -55,13 +64,31 @@ class UserController {
           </div>
         `,
       };
-      await this.transporter.sendMail(mailOptions);
+
+      // ✅ Verify SMTP Connection
+      this.transporter.verify((error, success) => {
+        if (error) {
+          console.error("SMTP Transporter Error:", error);
+        } else {
+          console.log("✅ SMTP Transporter is ready to send emails!");
+        }
+      });
+
+      // ✅ Send email and check response
+      try {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log("✅ Email sent successfully:", info.response);
+      } catch (emailError) {
+        console.error("❌ Error sending email:", emailError);
+      }
 
       res.status(201).json({ message: `User ${newUser.nom} created successfully.` });
+
     } catch (error) {
       res.status(500).json({ message: "Error creating user", error: error.message });
     }
-  }
+}
+
 
   async signIn(req, res) {
     try {
@@ -77,19 +104,15 @@ class UserController {
         return res.status(401).json({ message: "Invalid email or password" });
       }
 
-      const token = jwt.sign({ email: user.email }, "your-secret-key", {
+      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET || "default-secret", {
         expiresIn: "1h",
       });
 
-      res.json({
-        message: "Sign in successful",
-        token
-      });
+      res.json({ message: "Sign in successful", token });
     } catch (error) {
       res.status(500).json({ message: "Error signing in", error: error.message });
     }
   }
-
 
   async getUsers(req, res) {
     try {
@@ -124,9 +147,15 @@ class UserController {
     }
   }
 
-  async updateUserField(req, res, field) {
+  async updateUserField(req, res) {
     try {
       const updateData = {};
+      const field = req.body.field; // Pass the field dynamically
+
+      if (!field || !req.body[field]) {
+        return res.status(400).json({ message: "Field name and value are required." });
+      }
+
       updateData[field] = req.body[field];
 
       const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
@@ -161,17 +190,36 @@ class UserController {
           </div>
         `,
       };
-      await this.transporter.sendMail(mailOptions);
+
+      // ✅ Verify SMTP Connection before sending
+      this.transporter.verify((error, success) => {
+        if (error) {
+          console.error("SMTP Transporter Error:", error);
+        } else {
+          console.log("✅ SMTP Transporter is ready to send emails!");
+        }
+      });
+
+      // ✅ Send email and check response
+      try {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log("✅ Email sent successfully:", info.response);
+      } catch (emailError) {
+        console.error("❌ Error sending email:", emailError);
+      }
 
       res.json({ message: "Verification code sent" });
+
     } catch (error) {
       res.status(500).json({ message: "Error sending email", error: error.message });
     }
-  }
+}
+
 
   async resetPassword(req, res) {
     try {
       const { email, verificationCode, newPassword } = req.body;
+
       if (verificationCodes.get(email) !== parseInt(verificationCode)) {
         return res.status(400).json({ message: "Invalid verification code" });
       }
