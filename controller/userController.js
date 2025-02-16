@@ -27,23 +27,24 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
     this.forgotPassword = this.forgotPassword.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
   }
-
+// lil creation 3anna il 5ir w il barka mil les etapae adhouma ; 
   async createUser(req, res) { // req et res pour gerer les requetes http {request}{response }
     //console.log(this.transporter); 
 
     try {
+      // n7adher les ettribue lkoll elli chykounou les data mte3i illi chyitba3thou fil post bil body comme une request ( requette )
       const { nom, prenom, email, password, localisation } = req.body;
       console.log(req.body);
-
+//lezem nthabtou est ce que howa mawjoud walee bil email mte3ou 
       if (await User.findOne({ email })) {
         return res.status(400).json({ message: "Email already exists." });
       }
       // fama res.send(data)/ res.json(obj)/res.status(code).json(obj)/res.redirect(url): rediger vers une autre url 
 // el req contient les infos envoyeés par le client // el res permet d'envoyer une reponse au client [kima ki naatiw fl postman donnes fl body o yrj3lna msj json ]
 
-
+// nhadhi il password mte3ou pour une securitee 
       const hashedPassword = await bcrypt.hash(password, 10);
-
+// il sufiit tla3 moch mawjoud w il password hache w il data tba3thett 3al req.body w jawna a7la jaww nasnou newuser :
       const newUser = await User.create({
         nom,
         prenom,
@@ -94,20 +95,29 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 }
 
 
+
+
+
+
+
+
+// tawa fi login chyda5el des parametre illi houma wadh7in il email w il password krnouhom s7a7 w mawjoudin mara7bee snn il sou9 il jey 
   async signIn(req, res) {
     try {
+      //kilaa madem h-chyda5el des donne , donne adhoukom lezemhom ykounou comme un request fil body req.body
       const { email, password } = req.body;
-      const user = await User.findOne({ email });
 
+      // lezem tant que login w chyda5el l email w il password lezemnaa nthabtou ken il email aslan mawjoud milloul wallee 
+      const user = await User.findOne({ email });
       if (!user) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
-
+// idha il email mawjoud tawa chin9arnou les mt de passe illi da5lhaa w elli fil bd 
       const passwordMatch = await bcrypt.compare(password, user.password);
       if (!passwordMatch) {
         return res.status(401).json({ message: "Invalid email or password" });
       }
-
+// snanelou token 
       const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET || "default-secret", {
         expiresIn: "1h",
       });
@@ -118,6 +128,12 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
     }
   }
 
+
+
+
+
+
+// tawa affichage ma3ndou ma yda5el donne dinc ma3ndou ma y7ot w mafammech req.body
   async getUsers(req, res) {
     try {
       const users = await User.find();
@@ -126,6 +142,12 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       res.status(500).json({ message: "Error fetching users", error: error.message });
     }
   }
+
+
+
+
+
+
 
   async getUserById(req, res) {
     const userId = req.params.id; // lehne kif nheb njib l user bl id mte3ou il req tnajm te5ou req.pars.id 
@@ -142,6 +164,11 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
     }
   }
 
+
+
+
+
+
   async deleteUser(req, res) { // PAR ID yaani kif theb tfas5 user lezema l id 
     try {
       await User.findByIdAndRemove(req.params.id);
@@ -150,6 +177,11 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       res.status(500).json({ message: "Error deleting user", error: error.message });
     }
   }
+
+
+
+
+
 
   async updateUserField(req, res) { // mettre a jour un champ specifique 
     try {
@@ -168,6 +200,11 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       res.status(500).json({ message: `Error updating ${field}`, error: error.message });
     }
   }
+
+
+
+
+
 
   async forgotPassword(req, res) {
     try {
@@ -218,6 +255,11 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       res.status(500).json({ message: "Error sending email", error: error.message });
     }
 }
+
+
+
+
+
 
 
   async resetPassword(req, res) {
