@@ -7,18 +7,18 @@ const jwt = require("jsonwebtoken");
 
 const verificationCodes = new Map();
 
-class UserController {
+class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue au bon Plan doub mahowa yaml compte  ) 
   constructor() {
     this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
+        user: process.env.EMAIL_USER, // hedhom ili fl .env 
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    // Bind methods to preserve `this`
-    this.createUser = this.createUser.bind(this);
+    // Bind methods to preserve `this` bech naref eli rani nestaml fl class usecontroller (reférence)
+    this.createUser = this.createUser.bind(this); 
     this.signIn = this.signIn.bind(this);
     this.getUsers = this.getUsers.bind(this);
     this.getUserById = this.getUserById.bind(this);
@@ -28,7 +28,7 @@ class UserController {
     this.resetPassword = this.resetPassword.bind(this);
   }
 
-  async createUser(req, res) {
+  async createUser(req, res) { // req et res pour gerer les requetes http {request}{response }
     //console.log(this.transporter); 
 
     try {
@@ -38,6 +38,9 @@ class UserController {
       if (await User.findOne({ email })) {
         return res.status(400).json({ message: "Email already exists." });
       }
+      // fama res.send(data)/ res.json(obj)/res.status(code).json(obj)/res.redirect(url): rediger vers une autre url 
+// el req contient les infos envoyeés par le client // el res permet d'envoyer une reponse au client [kima ki naatiw fl postman donnes fl body o yrj3lna msj json ]
+
 
       const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -125,7 +128,7 @@ class UserController {
   }
 
   async getUserById(req, res) {
-    const userId = req.params.id;
+    const userId = req.params.id; // lehne kif nheb njib l user bl id mte3ou il req tnajm te5ou req.pars.id 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID" });
     }
@@ -139,7 +142,7 @@ class UserController {
     }
   }
 
-  async deleteUser(req, res) {
+  async deleteUser(req, res) { // PAR ID yaani kif theb tfas5 user lezema l id 
     try {
       await User.findByIdAndRemove(req.params.id);
       res.json({ message: "User deleted" });
@@ -148,7 +151,7 @@ class UserController {
     }
   }
 
-  async updateUserField(req, res) {
+  async updateUserField(req, res) { // mettre a jour un champ specifique 
     try {
       const updateData = {};
       const field = req.body.field; // Pass the field dynamically
@@ -176,7 +179,7 @@ class UserController {
       verificationCodes.set(email, verificationCode);
 
       console.log(`Verification code for ${email}: ${verificationCode}`);
-
+// bech tab3ath code ll user wakt mdp oublieé 
       const mailOptions = {
         from: `"BonPlan Support" <${process.env.EMAIL_USER}>`,
         to: email,
