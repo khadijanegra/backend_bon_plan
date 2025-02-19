@@ -10,7 +10,7 @@ router.get("/users", userController.getUsers);
 
 
 // lil ligin mte3 il user 
-router.post("/login",userController.signIn);
+router.post("/signIn",userController.signIn);
 //lil recuperation user  bil id illi fil bd 
 router.get("/users/:id", userController.getUserById);
 
