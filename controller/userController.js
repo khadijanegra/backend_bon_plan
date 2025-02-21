@@ -118,11 +118,13 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
         return res.status(401).json({ message: "Invalid email or password" });
       }
 // snanelou token 
-      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET || "default-secret", {
-        expiresIn: "1h",
-      });
+      const token = jwt.sign(
+        { email: user.email, id: user._id }, 
+        process.env.JWT_SECRET || "default-secret",
+        { expiresIn: "1h" }
+      );
 
-      res.json({ message: "Sign in successful", token });
+      res.json({ message: "Sign in successful", token, id: user._id });
     } catch (error) {
       res.status(500).json({ message: "Error signing in", error: error.message });
     }
