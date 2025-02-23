@@ -86,8 +86,13 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       } catch (emailError) {
         console.error("❌ Error sending email:", emailError);
       }
+      const token = jwt.sign(
+        { email: newUser.email, id: newUser.id }, 
+        process.env.JWT_SECRET || "default-secret",
+        { expiresIn: "1h" }
+      );
 
-      res.status(201).json({ message: `User ${newUser.nom} created successfully.` });
+      res.status(201).json({ message: `User ${newUser.nom} created successfully.` ,token , id : newUser.id });
 
     } catch (error) {
       res.status(500).json({ message: "Error creating user", error: error.message });
