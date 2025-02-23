@@ -184,27 +184,35 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
 
 
-
-  async updateUserField(req, res) { // mettre a jour un champ specifique 
+  async updateUserField(req, res) {
     try {
-      const updateData = {};
-      const field = req.body.field; // Pass the field dynamically
-
-      if (!field || !req.body[field]) {
-        return res.status(400).json({ message: "Field name and value are required." });
+      // Récupérer les données de localisation de la requête
+      const { localisation } = req.body;
+  
+      // Vérifier si la localisation est présente dans la requête
+      if (!localisation || !localisation.latitude || !localisation.longitude) {
+        return res.status(400).json({ message: "Latitude et longitude sont requis." });
       }
-
-      updateData[field] = req.body[field];
-
-      const user = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
-      res.json(user);
+  
+      // Effectuer la mise à jour de la localisation dans la base de données
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id, 
+        { localisation }, 
+        { new: true } // Retourner le nouvel utilisateur après mise à jour
+      );
+  
+      // Vérifier si l'utilisateur existe
+      if (!updatedUser) {
+        return res.status(404).json({ message: "Utilisateur non trouvé." });
+      }
+  
+      res.json(updatedUser); // Répondre avec l'utilisateur mis à jour
     } catch (error) {
-      res.status(500).json({ message: `Error updating ${field}`, error: error.message });
+      console.error("Erreur lors de la mise à jour:", error);
+      res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur", error: error.message });
     }
   }
-
-
-
+  
 
 
 

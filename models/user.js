@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },  
   prenom: String,
   password: { type: String, required: true }, 
-  localisation: String,
+  localisation: { 
+    latitude: Number, 
+    longitude: Number 
+  }, 
   role: { type: String, default: 'user' }
 });
 
