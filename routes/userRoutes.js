@@ -23,7 +23,7 @@ router.put("/users/:id/prenom", (req, res) => userController.updateUserField(req
 router.put("/users/:id/localisation", (req, res) => userController.updateUserField(req, res, "localisation"));
 router.put("/users/:id/genre", (req, res) => userController.updateUserField(req, res, "genre"));
 
-// lil forhet password 
+// lil forget password 
 router.post("/forgot-password", userController.forgotPassword);
 
 // lil reset password 

@@ -191,19 +191,25 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
   async updateUserField(req, res) {
     try {
-      // Récupérer les données de localisation de la requête
-      const { localisation } = req.body;
+      // Récupérer les champs à mettre à jour depuis la requête
+      const { nom, prenom, localisation } = req.body;
   
-      // Vérifier si la localisation est présente dans la requête
-      if (!localisation || !localisation.latitude || !localisation.longitude) {
-        return res.status(400).json({ message: "Latitude et longitude sont requis." });
+      // Vérifier s'il y a au moins un champ à mettre à jour
+      if (!nom && !prenom && (!localisation || !localisation.latitude || !localisation.longitude)) {
+        return res.status(400).json({ message: "Veuillez fournir au moins un champ valide à mettre à jour." });
       }
   
-      // Effectuer la mise à jour de la localisation dans la base de données
+      // Construire un objet avec les champs à mettre à jour
+      const updateData = {};
+      if (nom) updateData.nom = nom;
+      if (prenom) updateData.prenom = prenom;
+      if (localisation) updateData.localisation = localisation;
+  
+      // Mise à jour de l'utilisateur dans la base de données
       const updatedUser = await User.findByIdAndUpdate(
-        req.params.id, 
-        { localisation }, 
-        { new: true } // Retourner le nouvel utilisateur après mise à jour
+        req.params.id,
+        updateData,
+        { new: true } // Retourner l'utilisateur mis à jour
       );
   
       // Vérifier si l'utilisateur existe
