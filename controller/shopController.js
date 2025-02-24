@@ -5,7 +5,7 @@ class ShopController {
     // Create a new shop
     static async createShop(req, res) {
         try {
-            const { shop_nom, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id } = req.body; // les attributs mt3 shom hatinehom f req 
+            const { shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id } = req.body; // les attributs mt3 shom hatinehom f req 
 
             // Verify if the user exists 
             const userExists = await User.findById(user_id);
@@ -13,7 +13,7 @@ class ShopController {
                 return res.status(404).json({ message: 'User not found' });
             } // <== hne kbal ma yasna3 shom nhb nmchi nchoufou si sayed heda howa deja m3ana wala le mawjoud ou nn 
 
-            const newShop = new Shop({ shop_nom, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id });
+            const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id });
             await newShop.save();
 
             // Update user role to "manager" after creating a shop
@@ -51,10 +51,10 @@ class ShopController {
     // Update a shop
     static async updateShop(req, res) {
         try {
-            const { shop_nom, shop_desc, shop_local, shop_date_ouv, shop_date_ferm } = req.body;
+            const { shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm } = req.body;
 
             const updatedShop = await Shop.findByIdAndUpdate(req.params.id, 
-                { shop_nom, shop_desc, shop_local, shop_date_ouv, shop_date_ferm }, 
+                { shop_nom,phone , shop_desc, shop_local, shop_date_ouv, shop_date_ferm }, 
                 { new: true });
 
             if (!updatedShop) {
