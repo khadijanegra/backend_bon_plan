@@ -19,7 +19,7 @@ class ShopController {
             // Update user role to "manager" after creating a shop
             await User.findByIdAndUpdate(user_id, { role: 'manager' });
 
-            res.status(201).json(newShop);// hedhi traja3lk response json feha les attributes mt3 shom lkol il sufiit hiai creeéé
+            res.status(201).json({ id: newShop._id, message: "Shop créé avec succès" });// hedhi traja3lk response json feha les attributes mt3 shom lkol il sufiit hiai creeéé
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

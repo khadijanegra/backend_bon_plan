@@ -106,6 +106,18 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 // tawa fi login chyda5el des parametre illi houma wadh7in il email w il password krnouhom s7a7 w mawjoudin mara7bee snn il sou9 il jey 
   async signIn(req, res) {
     try {
