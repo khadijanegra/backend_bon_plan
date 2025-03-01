@@ -29,4 +29,10 @@ router.post("/forgot-password", userController.forgotPassword);
 // lil reset password 
 router.post("/reset-password", userController.resetPassword);
 
+router.post("/login-admin", userController.loginadmin);
+
+
+
+
+
 module.exports = router;

@@ -312,6 +312,35 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
       res.status(500).json({ message: "Error resetting password", error: error.message });
     }
   }
+
+  async loginadmin(req, res) {
+    try {
+      const { email, password } = req.body; // Récupérer les données du frontend
+  
+      const user = await User.findOne({ email });
+      if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) return res.status(400).json({ message: "Mot de passe incorrect" });
+  
+      // Vérifier si l'utilisateur est admin
+      if (user.role !== "admin") {
+        return res.status(403).json({ message: "Accès refusé, vous n'êtes pas administrateur." });
+      }
+  
+      // Générer un token avec le rôle
+      const token = jwt.sign({ id: user._id, role: user.role }, "SECRET_KEY", { expiresIn: "1h" });
+  
+      res.json({ token, role: user.role });
+    } catch (err) {
+      res.status(500).json({ message: "Erreur serveur" });
+    }
+  }
+  
+
+
+
+
 }
 
 module.exports = new UserController();
