@@ -387,6 +387,30 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
   }
 }
 
+async getUserFavorites(req, res) {
+  try {
+      const userId = req.params.id;
+      console.log("User ID:", userId); // 🟢 Vérifier si on récupère bien l'ID
+
+      const user = await User.findById(userId).populate("favoris"); // Récupérer les détails des favoris
+      if (!user) {
+          return res.status(404).json({ message: "Utilisateur non trouvé" });
+      }
+
+      console.log("User trouvé:", user); // 🟢 Vérifier
+
+      res.status(200).json({ favoris: user.favoris });
+  } catch (error) {
+      console.error("Erreur lors de la récupération des favoris:", error);
+      res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+}
+
+
+
+
+
+
 async getallfavorites (req , res){
   try {
     const userfavoris = await User.find(userId).populate('userId', 'email'); 
