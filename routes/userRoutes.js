@@ -31,6 +31,7 @@ router.post("/reset-password", userController.resetPassword);
 
 router.post("/login-admin", userController.loginadmin);
 
+router.post('/favoriclic' , userController.addToFavorites);
 
 
 

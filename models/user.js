@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     latitude: Number, 
     longitude: Number 
   }, 
-  role: { type: String, default: 'user' }
+  role: { type: String, default: 'user' },
+  favoris: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
 });
 
 const User = mongoose.model('User', userSchema);

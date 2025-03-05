@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Shop = require("../models/shop");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
@@ -355,11 +356,65 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
     }
 }
 
-  
+  async  addToFavorites(req, res) {
+  try {
+    const { userId, shop_id } = req.body;  // Assurez-vous de recevoir `shop_id` dans le corps de la requête
 
+    // Vérifier si l'utilisateur existe
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
 
+    // Vérifier si le shop existe
+    const shop = await Shop.findById(shop_id);  // Utilisez `Shop` avec une majuscule comme modèle
+    if (!shop) {
+      return res.status(404).json({ message: "Shop non trouvé." });
+    }
 
+    // Vérifier si le shop est déjà dans les favoris de l'utilisateur
+    if (user.favoris.includes(shop_id)) {
+      return res.status(400).json({ message: "Ce shop est déjà dans vos favoris." });
+    }
+
+    // Ajouter le shop aux favoris de l'utilisateur
+    user.favoris.push(shop_id);
+    await user.save();  // Sauvegarder les modifications
+
+    res.status(200).json({ message: "Shop ajouté aux favoris avec succès.", favoris: user.favoris });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur lors de l'ajout aux favoris", error: error.message });
+  }
+}
+
+async getallfavorites (req , res){
+  try {
+    const userfavoris = await User.find(userId).populate('userId', 'email'); 
+    res.status(200).json(userfavoris);
+} catch (error) {
+    res.status(500).json({ message: error.message });
+}
+}
+
+async getAllFavorites(req, res) {
+  try {
+    const userId = req.params.userId; // Récupère l'ID de l'utilisateur depuis les paramètres de la requête
+    const userFavorites = await User.find({ _id: userId }) // Trouve l'utilisateur par son ID
+      .populate('favorites', 'shop_name'); // Récupère les favoris avec le nom du shop
+
+    if (!userFavorites) {
+      return res.status(404).json({ message: "Utilisateur non trouvé." });
+    }
+
+    res.status(200).json(userFavorites); // Retourne les favoris de l'utilisateur
+  } catch (error) {
+    res.status(500).json({ message: error.message }); // En cas d'erreur, renvoie un message d'erreur
+  }
+}
 
 }
+
+
+
 
 module.exports = new UserController();
