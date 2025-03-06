@@ -11,6 +11,6 @@ const userSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } 
 });
 
-const shop = mongoose.model('shop', userSchema);
+const shop = mongoose.model('Shop', userSchema);
 
 module.exports = shop;
