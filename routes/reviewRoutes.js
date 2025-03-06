@@ -3,6 +3,7 @@ const router = express.Router();
 const reviewController = require('../controller/reviewController');
 
 router.post('/postreviews', reviewController.createReview);
-router.get('/getreviews',reviewController.fetshReview);
+router.get('/getreviews/:shop_id', reviewController.fetchReview);  // Utiliser le paramètre :shop_id
+
 
 module.exports = router;
