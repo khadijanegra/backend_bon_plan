@@ -33,7 +33,7 @@ router.post("/login-admin", userController.loginadmin);
 
 router.post('/favoriclic' , userController.addToFavorites);
 
-router.get("/users/:id/favorites", userController.getFavorites);
+router.get("/users/:id/favorites", userController.getUserFavorites);
 
 
 

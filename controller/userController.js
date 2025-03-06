@@ -1,10 +1,11 @@
-const User = require("../models/user");
 const Shop = require("../models/shop");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const User = require('../models/user');
+
 
 const verificationCodes = new Map();
 
@@ -411,30 +412,6 @@ async getUserFavorites(req, res) {
 
 
 
-async getallfavorites (req , res){
-  try {
-    const userfavoris = await User.find(userId).populate('userId', 'email'); 
-    res.status(200).json(userfavoris);
-} catch (error) {
-    res.status(500).json({ message: error.message });
-}
-}
-
-async getAllFavorites(req, res) {
-  try {
-    const userId = req.params.userId; // Récupère l'ID de l'utilisateur depuis les paramètres de la requête
-    const userFavorites = await User.find({ _id: userId }) // Trouve l'utilisateur par son ID
-      .populate('favorites', 'shop_name'); // Récupère les favoris avec le nom du shop
-
-    if (!userFavorites) {
-      return res.status(404).json({ message: "Utilisateur non trouvé." });
-    }
-
-    res.status(200).json(userFavorites); // Retourne les favoris de l'utilisateur
-  } catch (error) {
-    res.status(500).json({ message: error.message }); // En cas d'erreur, renvoie un message d'erreur
-  }
-}
 
 }
 
