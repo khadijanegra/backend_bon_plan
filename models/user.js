@@ -9,4 +9,6 @@ const userSchema = new mongoose.Schema({
     favoris: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }] // Référence aux shops
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
