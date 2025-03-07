@@ -32,7 +32,7 @@ class reviewController {
 
    static async fetchReviewbyid(req, res) {
         const { shop_id } = req.params;  // Récupérer le shop_id de l'URL
-        console.log("Shop ID received:", shop_id);  // Log de l'ID du shop reçu
+     
 
         // Vérifier si l'ID du shop est valide
         if (!mongoose.Types.ObjectId.isValid(shop_id)) {
