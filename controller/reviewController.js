@@ -1,7 +1,7 @@
 const Review=require('../models/review');
 const Shop = require('../models/shop');
 const User = require('../models/user');
-
+const mongoose = require("mongoose");
 class reviewController {
     static async createReview(req,res){
         try{
@@ -30,17 +30,17 @@ class reviewController {
     }
 
 
-    static async fetchReview(req, res) {
-        const { shop_id} = req.params;  // Récupérer le shop_id de l'URL
+   static async fetchReviewbyid(req, res) {
+        const { shop_id } = req.params;  // Récupérer le shop_id de l'URL
         console.log("Shop ID received:", shop_id);  // Log de l'ID du shop reçu
-        
+
         // Vérifier si l'ID du shop est valide
         if (!mongoose.Types.ObjectId.isValid(shop_id)) {
             return res.status(400).json({ message: "Invalid shop ID" });
         }
-        
+
         try {
-            const reviews = await Review.find({ shop_id }).populate('user_id', 'name');
+            const reviews = await Review.find({ shop_id }).populate('user_id', 'nom prenom email'); // Correction ici
             if (!reviews.length) {
                 return res.status(404).json({ message: "No reviews found for this shop" });
             }
