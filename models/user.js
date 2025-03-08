@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     role: String,
+    localisation: { 
+        latitude: Number, 
+        longitude: Number 
+      }, 
     favoris: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }] // Référence aux shops
 });
 

@@ -205,39 +205,43 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
   async updateUserField(req, res) {
     try {
-      // Récupérer les champs à mettre à jour depuis la requête
-      const { nom, prenom, localisation } = req.body;
-  
-      // Vérifier s'il y a au moins un champ à mettre à jour
-      if (!nom && !prenom && (!localisation || !localisation.latitude || !localisation.longitude)) {
-        return res.status(400).json({ message: "Veuillez fournir au moins un champ valide à mettre à jour." });
-      }
-  
-      // Construire un objet avec les champs à mettre à jour
-      const updateData = {};
-      if (nom) updateData.nom = nom;
-      if (prenom) updateData.prenom = prenom;
-      if (localisation) updateData.localisation = localisation;
-  
-      // Mise à jour de l'utilisateur dans la base de données
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { new: true } // Retourner l'utilisateur mis à jour
-      );
-  
-      // Vérifier si l'utilisateur existe
-      if (!updatedUser) {
-        return res.status(404).json({ message: "Utilisateur non trouvé." });
-      }
-  
-      res.json(updatedUser); // Répondre avec l'utilisateur mis à jour
+        // Récupérer les champs à mettre à jour depuis la requête
+        const { nom, prenom, localisation } = req.body;
+
+        // Vérifier si au moins un champ valide est fourni
+        if (!nom && !prenom && (!localisation || localisation.latitude === undefined || localisation.longitude === undefined)) {
+            return res.status(400).json({ message: "Veuillez fournir au moins un champ valide à mettre à jour." });
+        }
+
+        // Construire un objet avec les champs à mettre à jour
+        const updateData = {};
+        if (nom) updateData.nom = nom;
+        if (prenom) updateData.prenom = prenom;
+        if (localisation) {
+            updateData.localisation = {
+                latitude: localisation.latitude,
+                longitude: localisation.longitude
+            };
+        }
+
+        // Mise à jour de l'utilisateur dans la base de données
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            { $set: updateData }, // Utilisation de $set pour éviter d'écraser des champs non fournis
+            { new: true, runValidators: true } // Retourne l'utilisateur mis à jour et force la validation
+        );
+
+        // Vérifier si l'utilisateur existe
+        if (!updatedUser) {
+            return res.status(404).json({ message: "Utilisateur non trouvé." });
+        }
+
+        res.json(updatedUser); // Répondre avec l'utilisateur mis à jour
     } catch (error) {
-      console.error("Erreur lors de la mise à jour:", error);
-      res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur", error: error.message });
+        console.error("Erreur lors de la mise à jour:", error);
+        res.status(500).json({ message: "Erreur lors de la mise à jour de l'utilisateur", error: error.message });
     }
-  }
-  
+}
 
 
 
