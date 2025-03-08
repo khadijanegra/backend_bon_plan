@@ -52,7 +52,8 @@ app.post('/uploadshopImage', (req, res) => {
       return res.status(500).send(err);
     }
 
-    res.send('File uploaded successfully!');
+    res.json({ fileName: uploadedFile.name });
+
   });
 });
 
