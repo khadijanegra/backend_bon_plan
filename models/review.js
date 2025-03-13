@@ -7,6 +7,7 @@ const reviewSchema = new mongoose.Schema({
   note_cuisine: { type: Number, required: true, min: 1, max: 5 },
   note_ambiance: { type: Number, required: true, min: 1, max: 5 },
   commentaire: { type: String, trim: true },
+  date : Date,
 });
 
 const Review = mongoose.model('Review', reviewSchema);

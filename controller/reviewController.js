@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 class reviewController {
     static async createReview(req,res){
         try{
-            const { note_service, note_cuisine, note_ambiance, commentaire, user_id , shop_id} = req.body; 
+            const { note_service, note_cuisine, note_ambiance, commentaire, user_id , shop_id, date} = req.body; 
             
             const userExists = await User.findById(user_id);
             if (!userExists) {
@@ -19,7 +19,7 @@ class reviewController {
             }
 
 
-            const newReview = new Review({ note_service, note_cuisine, note_ambiance, commentaire, user_id , shop_id});
+            const newReview = new Review({ note_service, note_cuisine, note_ambiance, commentaire, user_id , shop_id , date});
             await newReview.save();
 
             res.status(201).json({ id: newReview._id, message: "Review créé avec succès" });// hedhi traja3lk response json feha les attributes mt3 shom lkol il sufiit hiai creeéé
