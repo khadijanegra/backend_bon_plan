@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
   shop_date_ouv: String,
   shop_date_ferm: String,
   shopImage : String,
-  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } 
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } ,
+  categorie : String,
 });
 
 const shop = mongoose.model('Shop', userSchema);
