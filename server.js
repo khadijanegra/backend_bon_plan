@@ -28,12 +28,7 @@ app.use('/user', userRoutes);
 app.use('/shops', shopRoutes);
 app.use('/review', reviewRoutes);
 
-
-
-
-
-
-
+//pour l'image de la creation du shop 
 
 app.post('/uploadshopImage', (req, res) => {
   if (!req.files || Object.keys(req.files).length === 0) {
@@ -58,6 +53,43 @@ app.post('/uploadshopImage', (req, res) => {
 });
 
 app.use('/fetchshopImages', express.static(path.join(__dirname, 'shopImage')));
+
+
+
+
+
+
+
+// pour la creation de l'image de l'avis 
+
+app.post('/uploadreviewImage', (req, res) => {
+  if (!req.files || Object.keys(req.files).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
+
+  // Access the file through req.files.<input_name>
+  let uploadedFile = req.files.file;
+
+  // Set the file upload path
+  const uploadPath = path.join(__dirname, 'reviewImages', uploadedFile.name);
+
+  // Use the mv() method to place the file in the desired directory
+  uploadedFile.mv(uploadPath, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+
+    res.json({ fileName: uploadedFile.name });
+
+  });
+});
+
+app.use('/fetchreviewImage', express.static(path.join(__dirname, 'reviewImages')));
+
+
+
+
+
 
 
 app.listen(PORT, () => {

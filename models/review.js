@@ -8,6 +8,7 @@ const reviewSchema = new mongoose.Schema({
   note_ambiance: { type: Number, required: true, min: 1, max: 5 },
   commentaire: { type: String, trim: true },
   date : Date,
+  reviewImages : String,
 });
 
 const Review = mongoose.model('Review', reviewSchema);
