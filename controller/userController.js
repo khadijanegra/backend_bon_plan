@@ -9,6 +9,18 @@ const User = require('../models/user');
 
 const verificationCodes = new Map();
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'maram.benattallah3@gmail.com', // Remplace par ton email
+    pass: 'hxsn dadk xygn qadw' // Mot de passe d'application
+  }
+});
+
+
+
+
+
 class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue au bon Plan doub mahowa yaml compte  ) 
   constructor() {
     this.transporter = nodemailer.createTransport({
@@ -28,7 +40,38 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
     this.updateUserField = this.updateUserField.bind(this);
     this.forgotPassword = this.forgotPassword.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
+    this.sendReclamation=this.sendReclamation.bind(this);
   }
+
+ 
+  
+  async sendReclamation  (req, res) {
+    const { rating, selectedOptions, comment } = req.body;
+  
+    try {
+      const mailOptions = {
+        from: 'maram.benattallah3@gmail.com', // Expéditeur
+        to: 'maram.benattallah3@gmail.com', // Destinataire (toi-même)
+        subject: 'Nouvelle Réclamation',
+        text: `
+          ⭐ Note: ${rating} / 5
+          ✅ Points à améliorer: ${selectedOptions.length > 0 ? selectedOptions.join(', ') : 'Aucun'}
+          📝 Commentaire: ${comment || 'Pas de commentaire ajouté'}
+        `
+      };
+  
+      await transporter.sendMail(mailOptions);
+      res.status(200).json({ message:'Réclamation envoyée avec succès' });
+  
+    } catch (error) {
+      console.error('❌ Erreur envoi email:', error);
+      res.status(500).json({ error: 'Erreur lors de l\'envoi de l\'email' });
+    }
+  };
+
+
+
+
 // lil creation 3anna il 5ir w il barka mil les etapae adhouma ; 
   async createUser(req, res) { // req et res pour gerer les requetes http {request}{response }
     //console.log(this.transporter); 

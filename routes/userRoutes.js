@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controller/userController');
 
+
+//Route pour envoyer une réclamation
+
+router.post('/send-reclamation',userController.sendReclamation); 
+
+
 // lil nzidou yser fil bd 
 router.post("/register", userController.createUser);
 
