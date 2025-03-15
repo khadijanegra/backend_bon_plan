@@ -51,10 +51,10 @@ class ShopController {
     // Update a shop
     static async updateShop(req, res) {
         try {
-            const { shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm } = req.body;
+            const { phone, shop_desc, shop_date_ouv, shop_date_ferm } = req.body;
 
             const updatedShop = await Shop.findByIdAndUpdate(req.params.id, 
-                { shop_nom,phone , shop_desc, shop_local, shop_date_ouv, shop_date_ferm }, 
+                { phone , shop_desc, shop_date_ouv, shop_date_ferm }, 
                 { new: true });
 
             if (!updatedShop) {
@@ -78,6 +78,10 @@ class ShopController {
             res.status(500).json({ message: error.message });
         }
     }
+
+
+
+   
 }
 
 module.exports = ShopController;
