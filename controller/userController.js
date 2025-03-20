@@ -18,9 +18,6 @@ const transporter = nodemailer.createTransport({
 });
 
 
-
-
-
 class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue au bon Plan doub mahowa yaml compte  ) 
   constructor() {
     this.transporter = nodemailer.createTransport({

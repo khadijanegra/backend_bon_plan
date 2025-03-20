@@ -30,23 +30,25 @@ class reviewController {
     }
 
 
-   static async fetchReviewbyid(req, res) {
-        const { shop_id } = req.params;  // Récupérer le shop_id de l'URL
-     
-
+    static async fetchReviewbyid(req, res) {
+        const { shop_id } = req.params; // Récupérer le shop_id de l'URL
+    
         // Vérifier si l'ID du shop est valide
         if (!mongoose.Types.ObjectId.isValid(shop_id)) {
             return res.status(400).json({ message: "Invalid shop ID" });
         }
-
+    
         try {
-            const reviews = await Review.find({ shop_id }).populate('user_id', 'nom prenom email'); // Correction ici
-            if (!reviews.length) {
-                return res.status(404).json({ message: "No reviews found for this shop" });
+            const reviews = await Review.find({ shop_id }).populate('user_id', 'nom prenom email');
+    
+            // Si aucun avis n'est trouvé, retourner un message au lieu d'un tableau vide
+            if (reviews.length === 0) {
+                return res.status(200).json({ message: "Aucun avis trouvé pour ce commerce." });
             }
+    
             res.status(200).json(reviews);
         } catch (error) {
-            console.log("Error:", error);  // Log de l'erreur
+            console.log("Error:", error); // Log de l'erreur
             res.status(500).json({ message: error.message });
         }
     }
