@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   shopImage : String,
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } ,
   categorie : String,
+  region : String,
 });
 
 const shop = mongoose.model('Shop', userSchema);
