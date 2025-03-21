@@ -48,6 +48,30 @@ class ShopController {
         }
     }
 
+
+
+
+
+
+ // Get all shops in the "Café" category
+static async getCafes(req, res) {
+    try {
+        // Assurez-vous que vous filtrez par 'categorie' et non '_id'
+        const cafes = await Shop.find({ categorie: "Café" })  // Filtrage correct par 'categorie'
+            .populate('user_id', 'name email');  // Peupler les informations de l'utilisateur
+
+        if (!cafes.length) {
+            return res.status(404).json({ message: 'No cafés found' });
+        }
+        res.status(200).json(cafes);  // Retourner les résultats
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+
     // Get shops by user ID
     static async getShopsByUserId(req, res) {
         try {
