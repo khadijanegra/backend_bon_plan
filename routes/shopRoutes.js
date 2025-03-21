@@ -9,5 +9,5 @@ router.put('/:id', shopController.updateShop);
 router.delete('/:id', shopController.deleteShop);
 // Route pour récupérer les shops par user_id
 router.get('/user/:user_id', shopController.getShopsByUserId);
-router.get('shoops/cafes', shopController.getCafes); // Ajout de la nouvelle route
+router.get('/cafes', shopController.getCafes); // Ajout de la nouvelle route
 module.exports = router;
