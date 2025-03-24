@@ -1,6 +1,16 @@
 const Shop = require('../models/shop');
 const User = require('../models/user');
 
+
+
+
+
+const { MeiliSearch } = require('meilisearch');
+const client = new MeiliSearch({
+    host: process.env.MEILISEARCH_HOST,
+    apiKey: process.env.MEILISEARCH_API_KEY
+});
+
 class ShopController {
     // Create a new shop
     static async createShop(req, res) {
@@ -50,24 +60,23 @@ class ShopController {
 
 
 
-
-
-
- // Get all shops in the "Café" category
-static async getCafes(req, res) {
-    try {
-        // Assurez-vous que vous filtrez par 'categorie' et non '_id'
-        const cafes = await Shop.find({ categorie: "Café" })  // Filtrage correct par 'categorie'
-            .populate('user_id', 'name email');  // Peupler les informations de l'utilisateur
-
-        if (!cafes.length) {
-            return res.status(404).json({ message: 'No cafés found' });
+   static async searchShops (req, res){
+        try {
+            const { query, categorie } = req.query;
+            const index = client.index('shops');
+    
+            const searchParams = {
+                filter: categorie ? `categorie = "${categorie}"` : undefined
+            };
+    
+            const results = await index.search(query || '', searchParams);
+            res.json(results.hits);
+        } catch (error) {
+            console.error('Erreur de recherche:', error);
+            res.status(500).json({ error: 'Erreur interne du serveur' });
         }
-        res.status(200).json(cafes);  // Retourner les résultats
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}
+    };
+
 
 
 
