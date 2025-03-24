@@ -10,5 +10,5 @@ router.delete('/:id', shopController.deleteShop);
 // Route pour récupérer les shops par user_id
 router.get('/user/:user_id', shopController.getShopsByUserId);
 
-router.get('/search', shopController.searchShops);
+router.get('/shops/search', shopController.searchShops);
 module.exports = router;
