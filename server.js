@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const shopRoutes = require('./routes/shopRoutes');
 const reviewRoutes = require('./routes/reviewRoutes')
+const chatbotRoutes = require("./routes/chatbotRoutes");
 
 const fileUpload = require('express-fileupload');
 const path = require('path');
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/user', userRoutes);
 app.use('/shops', shopRoutes);
 app.use('/review', reviewRoutes);
+app.use("/chatbot", chatbotRoutes);
 
 //pour l'image de la creation du shop 
 

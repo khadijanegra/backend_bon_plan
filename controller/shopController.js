@@ -60,22 +60,23 @@ class ShopController {
 
 
 
-   static async searchShops (req, res){
+    static async searchShops (req, res) {
         try {
             const { query, categorie } = req.query;
             const index = client.index('shops');
     
-            const searchParams = {
-                filter: categorie ? `categorie = "${categorie}"` : undefined
-            };
-    
+            const searchParams = categorie ? { filter: `categorie = "${categorie}"` } : {};
+            
             const results = await index.search(query || '', searchParams);
+            console.log("Search Results: ", results);  // Log the full result to debug
+    
             res.json(results.hits);
         } catch (error) {
             console.error('Erreur de recherche:', error);
             res.status(500).json({ error: 'Erreur interne du serveur' });
         }
     };
+    
 
 
 
