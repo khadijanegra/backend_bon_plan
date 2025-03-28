@@ -1,9 +1,14 @@
 const { SessionsClient } = require("@google-cloud/dialogflow");
 const path = require("path");
 
+
+// Charger la clé à partir de la variable d'environnement
+const keyJson = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS_JSON);
+
 const sessionClient = new SessionsClient({
-  keyFilename: path.join(__dirname, "../assets/dialogflow-key.json.json"),
+  credentials: keyJson, // Utiliser les credentials directement
 });
+
 
 exports.sendMessage = async (req, res) => {
   const { message, sessionId } = req.body;
