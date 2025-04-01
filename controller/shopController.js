@@ -23,7 +23,7 @@ class ShopController {
                 return res.status(404).json({ message: 'User not found' });
             } // <== hne kbal ma yasna3 shom nhb nmchi nchoufou si sayed heda howa deja m3ana wala le mawjoud ou nn 
 
-            const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region });
+            const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region , service });
             await newShop.save();
 
             // Update user role to "manager" after creating a shop
