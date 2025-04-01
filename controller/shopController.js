@@ -25,11 +25,27 @@ class ShopController {
 
             const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region , service });
             await newShop.save();
+            await client.index('shops').addDocuments([{ 
+                id: newShop._id, 
+                shop_nom, 
+                phone, 
+                shop_desc, 
+                shop_local, 
+                shop_date_ouv, 
+                shop_date_ferm, 
+                shopImage, 
+                categorie, 
+                region, 
+                service 
+            }]);
+            
 
             // Update user role to "manager" after creating a shop
             await User.findByIdAndUpdate(user_id, { role: 'manager' });
 
-            res.status(201).json({ id: newShop._id, message: "Shop créé avec succès" });// hedhi traja3lk response json feha les attributes mt3 shom lkol il sufiit hiai creeéé
+            setTimeout(() => {
+                res.status(201).json({ id: newShop._id, message: "Shop créé avec succès" });
+            }, 1000);// hedhi traja3lk response json feha les attributes mt3 shom lkol il sufiit hiai creeéé
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
