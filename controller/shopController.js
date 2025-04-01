@@ -15,7 +15,7 @@ class ShopController {
     // Create a new shop
     static async createShop(req, res) {
         try {
-            const { shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id , shopImage , categorie , region} = req.body; // les attributs mt3 shom hatinehom f req 
+            const { shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id , shopImage , categorie , region,service} = req.body; // les attributs mt3 shom hatinehom f req 
 
             // Verify if the user exists 
             const userExists = await User.findById(user_id);

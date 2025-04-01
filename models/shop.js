@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } ,
   categorie : String,
   region : String,
+  service: { type: [String], required: true }
 });
 
 const shop = mongoose.model('Shop', userSchema);
