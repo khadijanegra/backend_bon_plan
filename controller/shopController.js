@@ -25,20 +25,7 @@ class ShopController {
 
             const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region , service });
             await newShop.save();
-            await client.index('shops').addDocuments([{ 
-                id: newShop._id, 
-                shop_nom, 
-                phone, 
-                shop_desc, 
-                shop_local, 
-                shop_date_ouv, 
-                shop_date_ferm, 
-                shopImage, 
-                categorie, 
-                region, 
-                service 
-            }]);
-            
+          
 
             // Update user role to "manager" after creating a shop
             await User.findByIdAndUpdate(user_id, { role: 'manager' });
@@ -54,12 +41,15 @@ class ShopController {
     // Get all shops
     static async getAllShops(req, res) {
         try {
-            const shops = await Shop.find().populate('user_id', 'name email'); 
+            const shops = await Shop.find().populate('user_id', 'name email');
+            console.log(shops);  // Pour vérifier les données retournées par la DB
             res.status(200).json(shops);
         } catch (error) {
+            console.error(error);  // Pour afficher l'erreur
             res.status(500).json({ message: error.message });
         }
     }
+
 
     // Get a shop by ID
     static async getShopById(req, res) {
