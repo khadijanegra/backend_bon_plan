@@ -29,7 +29,6 @@ const indexShops = async () => {
         
 
 
-        await index.deleteAllDocuments();
         await index.addDocuments(formattedShops);
         console.log('Indexation réussie !');
         mongoose.connection.close();
