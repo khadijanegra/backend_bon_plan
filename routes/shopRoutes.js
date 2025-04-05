@@ -11,4 +11,6 @@ router.delete('/:id', shopController.deleteShop);
 router.get('/user/:user_id', shopController.getShopsByUserId);
 
 router.get('/shops/search', shopController.searchShops);
+router.put('/:id/visites', shopController.incrementVisites);
+
 module.exports = router;

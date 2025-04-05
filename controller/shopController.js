@@ -23,7 +23,7 @@ class ShopController {
                 return res.status(404).json({ message: 'User not found' });
             } // <== hne kbal ma yasna3 shom nhb nmchi nchoufou si sayed heda howa deja m3ana wala le mawjoud ou nn 
 
-            const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region , service });
+            const newShop = new Shop({ shop_nom, phone, shop_desc, shop_local, shop_date_ouv, shop_date_ferm, user_id ,shopImage,categorie , region , service , visites: 0  });
             await newShop.save();
           
 
@@ -37,6 +37,51 @@ class ShopController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    static async updateShops(req, res) {
+        try {
+            await mongoose.connect(process.env.MONGO_URI);
+            
+            // Mettre à jour tous les shops existants sans le champ 'visites' pour l'ajouter avec la valeur 0
+            await Shop.updateMany(
+                { visites: { $exists: false } }, // Cherche les shops sans le champ 'visites'
+                { $set: { visites: 0 } } // Ajoute 'visites' avec la valeur 0
+            );
+    
+            console.log('Mise à jour réussie des shops existants.');
+            res.status(200).json({ message: 'Visites initialisées à 0 pour les shops existants' });
+            mongoose.connection.close(); // Fermer la connexion après l'opération
+        } catch (error) {
+            console.error('Erreur lors de la mise à jour des shops:', error);
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
+
+
+static async incrementVisites(req, res) {
+    try {
+        const { id } = req.params; // Récupérer l'ID du shop à partir des paramètres d'URL
+        const shop = await Shop.findById(id);  // Trouver le shop par ID
+
+        if (!shop) {
+            return res.status(404).json({ message: 'Shop non trouvé' });
+        }
+
+        // Incrémenter le nombre de visites
+        shop.visites += 1;
+        await shop.save();  // Sauvegarder la mise à jour dans la base de données
+
+        console.log(`Nombre de visites mis à jour pour le shop ${id}: ${shop.visites}`);
+        res.status(200).json({ message: `Nombre de visites mis à jour pour le shop ${id}`, visites: shop.visites });
+    } catch (error) {
+        console.error('Erreur lors de la mise à jour des visites:', error);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
 
     // Get all shops
     static async getAllShops(req, res) {
