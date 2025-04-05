@@ -96,16 +96,9 @@ static async incrementVisites(req, res) {
         try {
             const { query, categorie } = req.query;
             const index = client.index('shops');
-
-
-            const searchParams = {
-                limit: parseInt(limit) || 20, // 👈 On ajoute le paramètre "limit"
-            };
-    
-            // Ajout du filtre catégorie si précisé
-            if (categorie) {
-                searchParams.filter = `categorie = "${categorie}"`;
-            }
+                
+            const searchParams = categorie ? { filter: `categorie = "${categorie}"` } : {};
+            
             const results = await index.search(query || '', searchParams);
             console.log("Search Results: ", results);  // Log the full result to debug
     
