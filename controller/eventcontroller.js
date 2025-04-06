@@ -35,18 +35,19 @@ class EventController {
         const { shop_id } = req.params;
     
         try {
-            // On récupère le shop par son ID et on renvoie l'événement associé à ce shop
-            const shop = await Shop.findById(shop_id).populate('event_id');
-            
-            if (!shop || !shop.event_id) {
+            // Chercher l'événement lié à ce shop
+            const event = await Event.findOne({ shop_id });
+    
+            if (!event) {
                 return res.status(404).json({ message: 'No event found for this shop' });
             }
     
-            res.status(200).json(shop.event_id); // Renvoie uniquement l'événement
+            res.status(200).json(event); // Renvoie l'événement complet
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
+    
     
 }
 module.exports = EventController;
