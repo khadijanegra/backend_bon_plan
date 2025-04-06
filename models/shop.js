@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   region : String,
   service: { type: [String], required: true },
   visites: { type: Number, default: 0 },
-  event_id: { type: mongoose.Schema.Types.ObjectId, ref: 'event' },
+  event_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Event' },
 });
 
 const shop = mongoose.model('Shop', userSchema);
