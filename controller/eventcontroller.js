@@ -31,27 +31,22 @@ class EventController {
 
 
 
-    static async fetchEventById(req, res) {
-        const { event_id } = req.params; // Récupérer l'ID de l'événement de l'URL
-
-        // Vérifier si l'ID de l'événement est valide
-        if (!mongoose.Types.ObjectId.isValid(event_id)) {
-            return res.status(400).json({ message: "ID d'événement invalide" });
-        }
-
+    static async getEventByShopId(req, res) {
+        const { shop_id } = req.params;
+    
         try {
-            const event = await Event.findById(event_id).populate('shop_id', 'shop_nom');
-
-            // Si l'événement n'est pas trouvé, retourner un message d'erreur
-            if (!event) {
-                return res.status(404).json({ message: "Événement non trouvé" });
+            // On récupère le shop par son ID et on renvoie l'événement associé à ce shop
+            const shop = await Shop.findById(shop_id).populate('event_id');
+            
+            if (!shop || !shop.event_id) {
+                return res.status(404).json({ message: 'No event found for this shop' });
             }
-
-            res.status(200).json(event); // Retourner l'événement trouvé
+    
+            res.status(200).json(shop.event_id); // Renvoie uniquement l'événement
         } catch (error) {
-            console.log("Error:", error); // Log de l'erreur
             res.status(500).json({ message: error.message });
         }
     }
+    
 }
 module.exports = EventController;
