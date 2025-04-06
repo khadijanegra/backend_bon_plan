@@ -21,6 +21,7 @@ const indexShops = async () => {
             shop_local: shop.shop_local,
             shop_date_ouv: shop.shop_date_ouv,
             shop_date_ferm: shop.shop_date_ferm,
+            shopImage: shop.shopImage,
             service:shop.service
         }));
 
