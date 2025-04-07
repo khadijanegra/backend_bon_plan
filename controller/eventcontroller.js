@@ -36,7 +36,7 @@ class EventController {
     
         try {
             // Chercher l'événement lié à ce shop
-            const event = await Event.findOne({ shop_id });
+            const event = await Event.find({ shop_id });
     
             if (!event) {
                 return res.status(404).json({ message: 'No event found for this shop' });
