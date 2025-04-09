@@ -64,40 +64,37 @@ class DashboardController {
 
 
     // Nombre de visiteurs et managers par rapport à tous les utilisateurs
-static async getProportionsVisiteursManagers(req, res) {
-    try {
-        // Récupérer le nombre total d'utilisateurs
-        const totalUsersResponse = await DashboardController.countusers(req, res);
-        const totalUsers = totalUsersResponse.data.nbrtotaleusers;
-
-        if (totalUsers === 0) {
-            return res.status(200).json({ message: "Aucun utilisateur trouvé." });
+    static async getProportionsVisiteursManagers(req, res) {
+        try {
+            // Récupérer le nombre total d'utilisateurs
+            const totalUsers = await Users.countDocuments();
+    
+            if (totalUsers === 0) {
+                return res.status(200).json({ message: "Aucun utilisateur trouvé." });
+            }
+    
+            // Récupérer le nombre de visiteurs
+            const nbrVisiteurs = await Users.countDocuments({ role: "user" });
+    
+            // Récupérer le nombre de managers
+            const nbrManagers = await Users.countDocuments({ role: "manager" });
+    
+            // Calcul des pourcentages
+            const proportionVisiteurs = ((nbrVisiteurs / totalUsers) * 100).toFixed(2);
+            const proportionManagers = ((nbrManagers / totalUsers) * 100).toFixed(2);
+    
+            res.status(200).json({
+                totalUsers,
+                proportionVisiteurs: `${proportionVisiteurs}%`,
+                proportionManagers: `${proportionManagers}%`,
+                nbrVisiteurs,
+                nbrManagers
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
         }
-
-        // Récupérer le nombre de visiteurs
-        const visitorsResponse = await DashboardController.countvisiteurs(req, res);
-        const nbrVisiteurs = visitorsResponse.data.nbrtotaledesvisiteur;
-
-        // Récupérer le nombre de managers
-        const managersResponse = await DashboardController.countmanagers(req, res);
-        const nbrManagers = managersResponse.data.nbrtotalemanager;
-
-        // Calcul des pourcentages
-        const proportionVisiteurs = ((nbrVisiteurs / totalUsers) * 100).toFixed(2);
-        const proportionManagers = ((nbrManagers / totalUsers) * 100).toFixed(2);
-
-        res.status(200).json({
-            totalUsers,
-            proportionVisiteurs: `${proportionVisiteurs}%`,
-            proportionManagers: `${proportionManagers}%`,
-            nbrVisiteurs,
-            nbrManagers
-        });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
     }
-}
-
+    
 
     //nbr des shop (cafe)
     static async nbrshopscafe(req , res){
