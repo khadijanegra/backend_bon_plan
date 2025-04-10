@@ -52,6 +52,19 @@ class reviewController {
             res.status(500).json({ message: error.message });
         }
     }
+    //getall revirew 
+    static async fetchAllReviews(req, res) {
+        try {
+            const reviews = await Review.find({})
+                .populate('user_id', 'nom prenom email')
+                .populate('shop_id', 'nom adresse');
+    
+            res.status(200).json(reviews);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
     
     
       
