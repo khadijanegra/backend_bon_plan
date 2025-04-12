@@ -75,7 +75,7 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
     try {
       // n7adher les ettribue lkoll elli chykounou les data mte3i illi chyitba3thou fil post bil body comme une request ( requette )
-      const { nom, prenom, email, password, localisation } = req.body;
+      const { nom, prenom, email, password, localisation,region } = req.body;
       console.log(req.body);
 //lezem nthabtou est ce que howa mawjoud walee bil email mte3ou 
       if (await User.findOne({ email })) {
@@ -93,6 +93,7 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
         email,
         password: hashedPassword,
         localisation,
+        region
     
       });
 

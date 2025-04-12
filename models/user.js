@@ -10,7 +10,8 @@ const userSchema = new mongoose.Schema({
         latitude: Number, 
         longitude: Number 
       }, 
-    favoris: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }] // Référence aux shops
+    favoris: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Shop' }], // Référence aux shops
+    region : {type: String}
 });
 
 const User = mongoose.model('User', userSchema);
