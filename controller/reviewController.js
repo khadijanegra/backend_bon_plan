@@ -56,8 +56,9 @@ class reviewController {
     static async fetchAllReviews(req, res) {
         try {
             const reviews = await Review.find({})
-                .populate('user_id', 'nom prenom email')
-                .populate('shop_id', 'nom adresse');
+            if (reviews.length === 0) {
+                return res.status(200).json({ message: "Aucun avis trouvé." });
+            }
     
             res.status(200).json(reviews);
         } catch (error) {
