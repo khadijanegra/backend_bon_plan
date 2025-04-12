@@ -184,9 +184,71 @@ static async incrementVisites(req, res) {
         }
     }
 
-
-
-   
+    static async getTopShops(req, res) {
+        try {
+            const topShops = await Shop.aggregate([
+                {
+                    $lookup: {
+                        from: 'reviews', // nom de la collection des avis
+                        localField: '_id',
+                        foreignField: 'shop_id',
+                        as: 'reviews'
+                    }
+                },
+                {
+                    $addFields: {
+                        positiveReviews: {
+                            $filter: {
+                                input: '$reviews',
+                                as: 'review',
+                                cond: {
+                                    $and: [
+                                        { $gte: ['$$review.note_cuisine', 3] },
+                                        { $gte: ['$$review.note_service', 3] },
+                                        { $gte: ['$$review.note_ambiance', 3] }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $addFields: {
+                        positiveReviewCount: { $size: '$positiveReviews' }
+                    }
+                },
+                {
+                    $match: {
+                        positiveReviewCount: { $gt: 0 }
+                    }
+                },
+                {
+                    $sort: {
+                        positiveReviewCount: -1
+                    }
+                },
+                {
+                    $limit: 5
+                },
+                {
+                    $project: {
+                        shop_nom: 1,
+                        shop_desc: 1,
+                        shop_local: 1,
+                        shopImage: 1,
+                        categorie: 1,
+                        positiveReviewCount: 1
+                    }
+                }
+            ]);
+    
+            res.status(200).json(topShops);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des top shops :', error);
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
 }
 
 module.exports = ShopController;
