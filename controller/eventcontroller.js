@@ -48,6 +48,17 @@ class EventController {
         }
     }
     
+
+    static async getAllEvents(req, res) {
+        try {
+            const events = await Event.find().populate('shop_id', 'nom categorie adresse'); 
+    
+            res.status(200).json(events);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+    
     
 }
 module.exports = EventController;
