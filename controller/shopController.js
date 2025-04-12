@@ -189,7 +189,7 @@ static async incrementVisites(req, res) {
             const topShops = await Shop.aggregate([
                 {
                     $lookup: {
-                        from: 'reviews', // nom de la collection des avis
+                        from: 'reviews',
                         localField: '_id',
                         foreignField: 'shop_id',
                         as: 'reviews'
@@ -204,8 +204,8 @@ static async incrementVisites(req, res) {
                                 cond: {
                                     $and: [
                                         { $gte: ['$$review.note_cuisine', 3] },
-                                        { $gte: ['$$review.note_service', 3] },
-                                        { $gte: ['$$review.note_ambiance', 3] }
+                                        { $gte: ['$$review.note_service', 4] },
+                                        { $gte: ['$$review.note_ambiance', 5] }
                                     ]
                                 }
                             }
@@ -241,6 +241,7 @@ static async incrementVisites(req, res) {
                     }
                 }
             ]);
+            
     
             res.status(200).json(topShops);
         } catch (error) {
