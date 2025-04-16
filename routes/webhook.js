@@ -21,7 +21,7 @@ router.post("/webhook", async (req, res) => {
       }
 
       const hotelsList = hotels
-        .map(Shop => `🏨 ${Shop.nom} - 📞 ${Shop.telephone || "non fourni"}`)
+        .map(Shop => `🏨 ${Shop.shop_nom} - 📞 ${Shop.phone || "non fourni"}`)
         .join("\n");
 
       return res.json({
