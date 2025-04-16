@@ -31,7 +31,7 @@ app.use('/review', reviewRoutes);
 app.use("/chatbot", chatbotRoutes);
 app.use('/event', eventroutes);
 app.use('/dashboard',dashboards)
-app.use("/",webhook);
+app.use("/web",webhook);
 //pour l'image de la creation du shop 
 
 app.post('/uploadshopImage', (req, res) => {
