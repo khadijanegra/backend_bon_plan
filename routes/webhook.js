@@ -2,6 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Shop= require("../models/shop"); // ton modèle Mongoose
+const shop = require("../models/shop");
 
 router.post("/webhook", async (req, res) => {
   const intent = req.body.queryResult.intent.displayName;
@@ -20,7 +21,7 @@ router.post("/webhook", async (req, res) => {
       }
 
       const hotelsList = hotels
-        .map(hotel => `🏨 ${hotel.nom} - 📞 ${hotel.telephone || "non fourni"}`)
+        .map(shop => `🏨 ${shop.nom} - 📞 ${shop.telephone || "non fourni"}`)
         .join("\n");
 
       return res.json({
