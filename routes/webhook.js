@@ -9,8 +9,8 @@ router.post("/webhook", async (req, res) => {
   if (intent === "hotel-sousse") {
     try {
       const hotels = await Shop.find({
-        type: "hotel",
-        ville: { $regex: /sousse/i }
+        categorie: "Hôtel",
+        region: { $regex: /sousse/i }
       });
 
       if (hotels.length === 0) {
