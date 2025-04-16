@@ -1,66 +1,31 @@
-const { MongoClient } = require('mongodb');
-const axios = require('axios');
-
-// Informations de connexion MongoDB
-const mongoURI = 'mongodb+srv://khadijanegra2:RqP99wOOdNa5dFB6@cluster0.hpiy1.mongodb.net/';
-const dbName = 'test';
-const collectionName = 'shops';
-
-// Informations Meilisearch
-const meiliSearchUrl = 'http://localhost:7700';
-const meiliSearchApiKey = 'kQ7EZkHiIDQpvYRUGDuYdClz678eShdIgGRql_o6kP4';
-
-async function indexData() {
-  try {
-    const client = new MongoClient(mongoURI);
-    await client.connect();
-
-    const db = client.db(dbName);
-    const collection = db.collection(collectionName);
-    const documents = await collection.find().toArray();
-
-    const indexName = collectionName;
-
-    // Créer l’index avec la clé primaire explicitement définie
+const { MeiliSearch } = require('meilisearch');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const client = new MeiliSearch({
+    host: process.env.MEILISEARCH_HOST,
+    apiKey: process.env.MEILISEARCH_API_KEY
+});
+const Shop = require('../models/shop'); // Assure-toi que ton modèle Shop est bien défini
+const indexShops = async () => {
     try {
-      await axios.post(`${meiliSearchUrl}/indexes`, {
-        uid: indexName,
-        primaryKey: 'id'
-      }, {
-        headers: {
-          'Authorization': `Bearer ${meiliSearchApiKey}`
-        }
-      });
-      console.log(`✅ Index "${indexName}" créé avec 'id' comme clé primaire.`);
+        await mongoose.connect(process.env.MONGO_URI);
+        const shops = await Shop.find(); // Récupérer les établissements
+        const formattedShops = shops.map(shop => ({
+            id: shop._id.toString(),
+            shop_nom: shop.shop_nom,
+            categorie: shop.categorie,
+            shop_local: shop.shop_local,
+            shop_date_ouv: shop.shop_date_ouv,
+            shop_date_ferm: shop.shop_date_ferm,
+            shopImage: shop.shopImage,
+            service:shop.service
+        }));
+        const index = client.index('shops'); // Créer un index "shops"
+        await index.addDocuments(formattedShops);
+        console.log('Indexation réussie !');
+        mongoose.connection.close();
     } catch (error) {
-      if (error.response?.status === 409) {
-        console.log(`ℹ️ Index "${indexName}" existe déjà.`);
-      } else {
-        throw error;
-      }
+        console.error('Erreur d’indexation:', error);
     }
-
-    const documentsWithIds = documents.map(doc => ({
-      ...doc,
-      id: doc._id.toString() // Important : Meilisearch attend un champ 'id' en string
-    }));
-
-    console.log(`Nombre de documents à indexer : ${documentsWithIds.length}`);
-
-    const response = await axios.post(`${meiliSearchUrl}/indexes/${indexName}/documents`, documentsWithIds, {
-      headers: {
-        'Authorization': `Bearer ${meiliSearchApiKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
-
-    console.log('Réponse Meilisearch:', response.data);
-    console.log('✅ Documents indexés avec succès !');
-
-    await client.close();
-  } catch (error) {
-    console.error('❌ Erreur d\'indexation:', error);
-  }
-}
-
-indexData();
+};
+indexShops();
