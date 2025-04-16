@@ -1,12 +1,12 @@
 // backend/webhook.js
 const express = require("express");
 const router = express.Router();
-const Shop = require("./models/Shop"); // ton modèle Mongoose
+const Shop= require("../models/shop"); // ton modèle Mongoose
 
 router.post("/webhook", async (req, res) => {
   const intent = req.body.queryResult.intent.displayName;
 
-  if (intent === "hotels_sousse") {
+  if (intent === "hotel-sousse") {
     try {
       const hotels = await Shop.find({
         type: "hotel",
