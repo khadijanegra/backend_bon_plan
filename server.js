@@ -7,7 +7,7 @@ const reviewRoutes = require('./routes/reviewRoutes')
 const chatbotRoutes = require("./routes/chatbotRoutes");
 const eventroutes = require('./routes/eventroutes')
 const dashboards = require('./routes/dashboardroute')
-
+const webhook=require('./routes/webhook')
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const app = express();
@@ -31,7 +31,7 @@ app.use('/review', reviewRoutes);
 app.use("/chatbot", chatbotRoutes);
 app.use('/event', eventroutes);
 app.use('/dashboard',dashboards)
-app.use("/", webhookRoutes);
+app.use("/",webhook);
 //pour l'image de la creation du shop 
 
 app.post('/uploadshopImage', (req, res) => {
