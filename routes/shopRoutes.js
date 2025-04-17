@@ -2,11 +2,10 @@ const express = require('express');
 const router = express.Router();
 const shopController = require('../controller/shopController');
 
-
+router.get('/search', shopController.searchShops);
 router.get('/top-shops', shopController.getTopShops);
 router.post('/', shopController.createShop);
 router.get('/getallshops', shopController.getAllShops);
-router.get('/shops/search', shopController.searchShops);
 router.get('/user/:user_id', shopController.getShopsByUserId);
 router.put('/:id/visites', shopController.incrementVisites);
 

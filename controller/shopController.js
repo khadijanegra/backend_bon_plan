@@ -116,26 +116,44 @@ static async incrementVisites(req, res) {
         }
     }
 
+   
+   static async searchShops(req, res) {
+    try {
+        const { q } = req.query;
 
-
-    static async searchShops (req, res) {
-        try {
-            const { query, categorie } = req.query;
-            const index = client.index('shops');
-                
-            const searchParams = categorie ? { filter: `categorie = "${categorie}"` } : {};
-            
-            const results = await index.search(query || '', searchParams);
-            console.log("Search Results: ", results);  // Log the full result to debug
-    
-            res.json(results.hits);
-        } catch (error) {
-            console.error('Erreur de recherche:', error);
-            res.status(500).json({ error: 'Erreur interne du serveur' });
+        if (!q || q.trim() === '') {
+            return res.status(400).json({ message: 'Le paramètre de recherche est requis.' });
         }
-    };
-    
 
+        // Découpe la requête en mots, en supprimant les espaces multiples
+        const terms = q.trim().split(/\s+/); // exemple : "boulanger Dakar" => ['boulanger', 'Dakar']
+
+        // Pour chaque terme, créer un $or qui le teste sur les différents champs
+        const andConditions = terms.map(term => {
+            const regex = new RegExp(term, 'i'); // insensible à la casse
+            return {
+                $or: [
+                    { categorie: regex },
+                    { region: regex },
+                    { service: regex },
+                    { shop_nom: regex }
+                ]
+            };
+        });
+
+        const query = { $and: andConditions }; // tous les termes doivent être présents
+
+        const shops = await Shop.find(query);
+
+        if (shops.length === 0) {
+            return res.status(404).json({ message: 'Aucun shop trouvé avec ces critères.' });
+        }
+
+        res.status(200).json(shops);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 
 
