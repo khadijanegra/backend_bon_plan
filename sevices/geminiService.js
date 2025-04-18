@@ -15,14 +15,20 @@ async function analyserAvisAvecImage(texte, imageBuffer) {
         // Get the model
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-        const prompt = `Analyze this review and image of a restaurant or shop. 
-        Consider the sentiment, key points mentioned, and any specific details about:
+        const prompt = `Analyze this review and the image provided of a restaurant or shop. 
+        Evaluate:
+        - Sentiment of the review
+        - Key points mentioned
         - Service quality
         - Atmosphere
-        - Food/Product quality
+        - Food or product quality
         - Value for money
-        Provide a summary in French.`;
-
+        
+        Also, check if the image is blurry, unclear, or not relevant to a restaurant or shop. 
+        If so, mention that the image quality makes it difficult to provide a meaningful analysis.
+        
+        Then, provide a concise summary in French.`;
+        
         // premiererment yanalysyy il texte w il inout ya3nii il texte y7ottou fi fil inputParts w yhizha m3aha il prompt 
         const inputParts = [
             { text: prompt + "\n\nReview text: " + texte }
