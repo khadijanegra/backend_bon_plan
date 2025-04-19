@@ -8,7 +8,7 @@ const handleChat = async (req, res) => {
     const prompt = `
 Tu es un assistant intelligent qui recommande des shops (cafés, restaurants, hôtels, etc).
 
-Réponds au format JSON strict uniquement, sans texte autour. N’écris rien en dehors du JSON.
+Réponds au format JSON strict uniquement, sans texte autour.
 
 Format strict attendu :
 {
@@ -17,16 +17,33 @@ Format strict attendu :
     {
       "name": "Nom du shop",
       "description": "Description courte du shop",
-      "estimated_price": "Prix estimé en TND"
+      "estimated_price": "Fourchette de prix estimée en TND, exemple: '15-30 TND'"
     }
   ]
 }
 
 Règles obligatoires :
 - Fournis TOUJOURS une description et un prix estimé pour chaque shop.
-- Même pour les cafés ou restaurants, donne une estimation claire du prix (ex. : "15-30 TND").
-- Ne renvoie rien d’autre que ce format JSON strict.
+- Si tu ne connais pas le prix exact, fais une estimation raisonnable basée sur le type (ex. : cafés: 10-20 TND, restos: 20-40 TND, hôtels: 100-300 TND).
+- N’écris aucun texte en dehors du JSON.
 - Pas de balises Markdown, pas de texte libre.
+
+Exemple :
+{
+  "reply": "Voici quelques cafés sympas à Sousse avec un budget de 200 TND.",
+  "results": [
+    {
+      "name": "Café El Medina",
+      "description": "Café traditionnel au cœur de la médina avec une ambiance authentique.",
+      "estimated_price": "10-25 TND"
+    },
+    {
+      "name": "Sky Lounge",
+      "description": "Café moderne avec vue panoramique et boissons variées.",
+      "estimated_price": "20-40 TND"
+    }
+  ]
+}
 
 Question utilisateur : ${message}
 `;
