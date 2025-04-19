@@ -156,22 +156,6 @@ static async incrementVisites(req, res) {
 }
 
 
-static async  filterShops  (criteria)  {
-    const { location, cuisine, budget } = criteria;
-  
-    try {
-      const filteredShops = await Shop.find({
-        location: { $regex: location, $options: 'i' }, // Recherche insensible à la casse pour la localisation
-        cuisine: { $regex: cuisine, $options: 'i' },
-        budget: budget, // Tu pourrais faire ça selon un intervalle ou des valeurs spécifiques
-      }).sort({ visites: -1 }); // Trie par popularité (nombre de visites)
-  
-      return filteredShops;
-    } catch (error) {
-      console.error('Erreur lors du filtrage des shops:', error);
-      throw error;
-    }
-  };
   
 
     // Get shops by user ID
