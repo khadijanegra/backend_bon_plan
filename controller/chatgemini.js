@@ -16,6 +16,9 @@ Format attendu :
 Question utilisateur : ${message}
 `;
 
+    
+console.log("Réponse de l'API:",response.data); // Affiche les données de la réponse
+
     // Appel à l'API Gemini
     const response = await axios.post(
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=' + process.env.CHATGEMI_key,
