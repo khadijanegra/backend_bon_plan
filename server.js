@@ -9,6 +9,8 @@ const eventroutes = require('./routes/eventroutes')
 const dashboards = require('./routes/dashboardroute')
 const analyseroute = require('./routes/analyseroute')
 const webhook=require('./routes/webhook')
+const chatgemini=require('./routes/chatgemini')
+
 const fileUpload = require('express-fileupload');
 const path = require('path');
 const app = express();
@@ -34,6 +36,7 @@ app.use('/event', eventroutes);
 app.use('/dashboard',dashboards)
 app.use("/web",webhook);
 app.use('/analyse-review',analyseroute);
+app.use('/chatgemini',chatgemini)
 //pour l'image de la creation du shop 
 
 app.post('/uploadshopImage', (req, res) => {
