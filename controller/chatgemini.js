@@ -16,9 +16,6 @@ Format attendu :
 Question utilisateur : ${message}
 `;
 
-    
-console.log("Réponse de l'API:",response.data); // Affiche les données de la réponse
-
     // Appel à l'API Gemini
     const response = await axios.post(
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=' + process.env.CHATGEMI_key,
@@ -31,6 +28,9 @@ console.log("Réponse de l'API:",response.data); // Affiche les données de la r
         ],
       }
     );
+
+    // Affichage de la réponse de l'API après l'appel
+    console.log("Réponse de l'API:", response.data); // Affiche les données de la réponse
 
     // Récupération de la réponse du chatbot
     let botReply = response.data.candidates[0].content.parts[0].text;
