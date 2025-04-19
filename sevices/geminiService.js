@@ -28,6 +28,8 @@ async function analyserAvisAvecImage(texte, imageBuffer) {
         If so, mention that the image quality makes it difficult to provide a meaningful analysis.
         
         Then, provide a concise summary in French.`;
+
+        
         
         // premiererment yanalysyy il texte w il inout ya3nii il texte y7ottou fi fil inputParts w yhizha m3aha il prompt 
         const inputParts = [
