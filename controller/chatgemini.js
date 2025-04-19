@@ -1,46 +1,57 @@
 const axios = require('axios');
+const Shop = require('../models/shop');
 
 const handleChat = async (req, res) => {
-  const { message, context } = req.body;
+  const { message } = req.body;
 
   try {
-    // ✅ PROMPT amélioré
+    // 🔍 Étape 1 : Extraire région et catégorie (simplifié ici)
+    const regions = ["tunis", "sousse", "sfax", "bizerte", "nabeul", "djerba"];
+    const categories = ["restaurant", "café", "hôtel"];
+    
+    const lowerMessage = message.toLowerCase();
+    const region = regions.find(r => lowerMessage.includes(r)) || "";
+    const categorie = categories.find(c => lowerMessage.includes(c)) || "";
+
+    // 🔍 Étape 2 : Chercher dans la base MongoDB
+    let dbResults = [];
+
+    if (region && categorie) {
+      const rawResults = await Shop.find({
+        region: new RegExp(region, 'i'),
+        categorie: new RegExp(categorie, 'i'),
+      }).limit(5);
+
+      dbResults = rawResults.map(shop => ({
+        name: shop.shop_nom,
+        description: shop.shop_desc || "Description non fournie.",
+        estimated_price: shop.price_reservation
+          ? `${shop.price_reservation}-40 TND`
+          : (categorie === "restaurant"
+            ? "20-40 TND"
+            : categorie === "café"
+            ? "10-20 TND"
+            : "100-300 TND"),
+      }));
+    }
+
+    // 🧠 Étape 3 : Construire le prompt
     const prompt = `
 Tu es un assistant intelligent qui recommande des shops (cafés, restaurants, hôtels, etc).
 
-Réponds au format JSON strict uniquement, sans texte autour.
+Voici des shops de ma base de données :
+${JSON.stringify(dbResults, null, 2)}
 
-Format strict attendu :
+Propose aussi d'autres suggestions similaires (génératives).
+Réponds au format JSON strict uniquement, sans texte autour :
+
 {
   "reply": "Ta réponse pour l'utilisateur ici.",
   "results": [
     {
       "name": "Nom du shop",
       "description": "Description courte du shop",
-      "estimated_price": "Fourchette de prix estimée en TND, exemple: '15-30 TND'"
-    }
-  ]
-}
-
-Règles obligatoires :
-- Fournis TOUJOURS une description et un prix estimé pour chaque shop.
-- Si tu ne connais pas le prix exact, fais une estimation raisonnable basée sur le type (ex. : cafés: 10-20 TND, restos: 20-40 TND, hôtels: 100-300 TND).
-- N’écris aucun texte en dehors du JSON.
-- Pas de balises Markdown, pas de texte libre.
-
-Exemple :
-{
-  "reply": "Voici quelques cafés sympas à Sousse avec un budget de 200 TND.",
-  "results": [
-    {
-      "name": "Café El Medina",
-      "description": "Café traditionnel au cœur de la médina avec une ambiance authentique.",
-      "estimated_price": "10-25 TND"
-    },
-    {
-      "name": "Sky Lounge",
-      "description": "Café moderne avec vue panoramique et boissons variées.",
-      "estimated_price": "20-40 TND"
+      "estimated_price": "Fourchette de prix estimée en TND"
     }
   ]
 }
@@ -48,6 +59,7 @@ Exemple :
 Question utilisateur : ${message}
 `;
 
+    // 🤖 Étape 4 : Appel à Gemini
     const response = await axios.post(
       'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=' + process.env.CHATGEMI_key,
       {
@@ -60,8 +72,8 @@ Question utilisateur : ${message}
       }
     );
 
-    // 🔍 Affichage brut (debug)
-    console.log("Réponse de l'API:", response.data);
+    // 🔍 Debug brut
+    console.log("Réponse de Gemini:", response.data);
 
     // 🧼 Nettoyage
     let botReply = response.data.candidates[0].content.parts[0].text;
@@ -71,15 +83,18 @@ Question utilisateur : ${message}
     try {
       jsonReply = JSON.parse(botReply);
     } catch (parseError) {
-      console.error("❌ Erreur lors du parsing JSON :", parseError.message);
-      return res.status(500).json({ reply: botReply, error: "La réponse n’était pas un JSON valide même après nettoyage." });
+      console.error("❌ Erreur de parsing JSON :", parseError.message);
+      return res.status(500).json({
+        reply: botReply,
+        error: "La réponse n’était pas un JSON valide même après nettoyage.",
+      });
     }
 
     res.json(jsonReply);
 
   } catch (error) {
     console.error('🔥 ERREUR DÉTAILLÉE GEMINI 🔥', error.response?.data || error.message);
-    res.status(500).json({ error: 'Erreur lors de la communication avec Gemini.' });
+    res.status(500).json({ error: 'Erreur lors de la communication avec Gemini ou MongoDB.' });
   }
 };
 
