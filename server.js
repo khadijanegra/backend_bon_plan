@@ -10,6 +10,7 @@ const dashboards = require('./routes/dashboardroute')
 const analyseroute = require('./routes/analyseroute')
 const webhook=require('./routes/webhook')
 const chatgemini=require('./routes/chatgemini')
+const commandeRoutes = require('./routes/commanderoute');
 
 const fileUpload = require('express-fileupload');
 const path = require('path');
@@ -37,6 +38,7 @@ app.use('/dashboard',dashboards)
 app.use("/web",webhook);
 app.use('/analyse-review',analyseroute);
 app.use('/chatgemini',chatgemini)
+app.use('/commande',commandeRoutes)
 //pour l'image de la creation du shop 
 
 app.post('/uploadshopImage', (req, res) => {
