@@ -5,7 +5,7 @@ const Commande = require('../models/commande');
 class CommandeController {
     static async createCommande(req, res) {
         try {
-            const { date_recuperation, plats_menu, prix_total, user_id, shop_id, random_code} = req.body;
+            const { date_creation ,date_recuperation, plats_menu, prix_total, user_id, shop_id, random_code} = req.body;
 
             // Vérifie si le shop existe avant de créer la commande
             const shopExists = await Shop.findById(shop_id);
@@ -20,7 +20,7 @@ class CommandeController {
             }
 
             // Créer une nouvelle commande
-            const newCommande = new Commande({ date_recuperation, plats_menu, prix_total, user_id, shop_id , random_code });
+            const newCommande = new Commande({  date_creation ,date_recuperation, plats_menu, prix_total, user_id, shop_id , random_code });
             await newCommande.save();
 
             // Retourne une réponse de succès

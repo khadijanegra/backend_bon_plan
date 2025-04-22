@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const commandeSchema = new mongoose.Schema({
+    date_creation : { type: Date, default: Date.now },
     date_recuperation: { type: String, required: true },
     plats_menu: { type: Array, required: true },
     prix_total: { type: Number, required: true },
