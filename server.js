@@ -11,22 +11,43 @@ const analyseroute = require('./routes/analyseroute')
 const webhook=require('./routes/webhook')
 const chatgemini=require('./routes/chatgemini')
 const commandeRoutes = require('./routes/commanderoute');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const app = express();
+app.use(express.json()); // Middleware pour parser le JSON et activer le missleware pour na9raw il JSON 
+// le missleware transforme les requette JSON en objet JS accessible dans req.body
+require('dotenv').config();
+
+
+app.post('/payement', async (req, res) => {
+  try {
+    const { amount } = req.body;  // Tu recevras le montant de la requête du frontend, en centimes (par exemple 1000 pour 10.00 $)
+
+    // Crée un PaymentIntent avec le montant et la devise
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,  
+      currency: 'usd', 
+    });
+
+    // Envoie le client secret au frontend pour compléter le paiement
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+
 
 const fileUpload = require('express-fileupload');
 const path = require('path');
-const app = express();
 app.use(fileUpload());
 
-require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
 connectDB();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Use the routes
 app.use('/user', userRoutes);
