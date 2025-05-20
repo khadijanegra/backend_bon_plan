@@ -134,10 +134,10 @@ app.get('/api/recommend', async (req, res) => {
     });
 
     res.json(response.data);
-  } catch (error) {
-    console.error('Erreur Flask API :', error.message);
-    res.status(500).json({ error: 'Erreur depuis le serveur Flask' });
-  }
+  }catch (error) {
+  console.error('Erreur Flask API :', error.response?.data || error.message);
+  res.status(500).json({ error: 'Erreur depuis le serveur Flask' });
+}
 });
 
 
