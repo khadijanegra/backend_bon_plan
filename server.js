@@ -45,6 +45,8 @@ app.use(fileUpload());
 
 
 const PORT = process.env.PORT || 3000;
+const FLASK_API_URL = process.env.FLASK_API_URL;
+
 
 // Connect to MongoDB
 connectDB();
@@ -119,8 +121,24 @@ app.post('/uploadreviewImage', (req, res) => {
 app.use('/fetchreviewImage', express.static(path.join(__dirname, 'reviewImages')));
 
 
+app.get('/api/recommend', async (req, res) => {
+  const userId = req.query.user_id;
 
+  if (!userId) {
+    return res.status(400).json({ error: 'user_id est requis' });
+  }
 
+  try {
+    const response = await axios.get(`${process.env.FLASK_API_URL}/recommander`, {
+      params: { user_id: userId }
+    });
+
+    res.json(response.data);
+  } catch (error) {
+    console.error('Erreur Flask API :', error.message);
+    res.status(500).json({ error: 'Erreur depuis le serveur Flask' });
+  }
+});
 
 
 
