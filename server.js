@@ -13,6 +13,7 @@ const chatgemini=require('./routes/chatgemini')
 const commandeRoutes = require('./routes/commanderoute');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const app = express();
+const axios = require('axios');
 app.use(express.json()); // Middleware pour parser le JSON et activer le missleware pour na9raw il JSON 
 // le missleware transforme les requette JSON en objet JS accessible dans req.body
 require('dotenv').config();
