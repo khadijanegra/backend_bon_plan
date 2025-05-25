@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     }
   }
 });
+shopSchema.index({ shop_nom: 1 });
+shopSchema.index({ region: 1 });
+shopSchema.index({ categorie: 1 });
+shopSchema.index({ user_id: 1 });
 
 const shop = mongoose.model('Shop', userSchema);
 

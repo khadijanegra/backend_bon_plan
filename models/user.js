@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     region : {type: String}
 });
 
+userSchema.index({ email: 1 })
+userSchema.index({ nom: 1 });
+userSchema.index({ prenom: 1 });
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
