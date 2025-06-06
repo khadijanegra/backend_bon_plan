@@ -61,7 +61,7 @@ Question utilisateur : ${message}
 
     // 🤖 Étape 4 : Appel à Gemini
     const response = await axios.post(
-      'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent?key=' + process.env.CHATGEMI_key,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + process.env.CHATGEMI_key,
       {
         contents: [
           {
