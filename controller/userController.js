@@ -233,7 +233,7 @@ class UserController { // sna3neh bech nab3thou bih msg ll user jdid (bienvenue 
 
   async deleteUser(req, res) { // PAR ID yaani kif theb tfas5 user lezema l id 
     try {
-      await User.findByIdAndRemove(req.params.id);
+      await User.findByIdAndDelete(req.params.id);
       res.json({ message: "User deleted" });
     } catch (error) {
       res.status(500).json({ message: "Error deleting user", error: error.message });

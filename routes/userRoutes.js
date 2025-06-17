@@ -7,7 +7,7 @@ const userController = require('../controller/userController');
 
 router.post('/send-reclamation',userController.sendReclamation); 
 
-
+router.delete('/deletuser/:id',userController.deleteUser);
 // lil nzidou yser fil bd 
 router.post("/register", userController.createUser);
 
